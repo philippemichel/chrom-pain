@@ -1,0 +1,104 @@
+---
+title: ""
+subtitle: "Plan d'analyse statistique"
+author: "Philippe MICHEL"
+date: "`r format(Sys.Date(),'%d %B %Y')`"
+html:
+  toc: true
+  html-math-method: katex
+format: pdf
+pdf-engine: lualatex
+keep-tex: true
+number-sections: true
+toc: false
+lof: false
+lot: false
+mainfont: Minion Pro
+mainfontoptions:
+  - Numbers=OldStyle
+  - Ligatures=TeX
+  - Ligatures= Rare
+  - Ligatures= Historic
+  - Style=Alternate
+  - Contextuals = Swash
+sansfont: Myriad Pro
+sansfontoptions:
+  - Ligatures=TeX
+mathfontoptions: 
+  - Numbers=Proportional
+fig-cap-location: bottom
+tbl-cap-location: top
+class: scrartcl
+classoption: [french]
+lang: fr-FR
+papersize: a4paper
+editor: source
+cite-method: biblatex
+bibliography: stat.bib
+license: "CC BY-SA"
+---
+
+```{r setup, include= FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = FALSE,
+ fig.width = 7,
+ fig.asp = 0.8,
+ out.width = "100%"
+)
+```
+
+```{r info}
+rm(list=ls())
+library("baseph")
+library("tidyverse")
+library("kableExtra")
+# sessionInfo()
+```
+
+Ce document ne concerne que l'analyse statistique des données.
+
+Le risque $\alpha$ retenu sera de 0,05 & la puissance de 0,8.
+
+## Description de la population
+
+### Analyse simple
+
+La description de la population concerne :
+
+
+
+Plusieurs tableaux descriptifs simples seront réalisés. Des graphiques de distribution pourront être réalisés pour les items les plus importants.
+
+Une recherche de corrélation entre les variable sera réalisée, celles-ci devant être prises en compte pour l'analyse factorielle ou les régressions.
+
+### Analyse factorielle
+
+Si le nombre de cas recueillis le permet une analyse factorielle en MCA (Analyse de correspondances multiples) sera réalisée.
+
+Cette analyse ne pourra être qu'après transformation des variables numériques en catégories & imputation des données manquantes ce qui n'est possible que si ces dernières ne sont pas trop nombreuses.
+
+## Objectif principal
+
+Le critère principal est 
+
+Une analyse simple (test de $\chi^2$ ou de Wilcoxon) sera réalisée pour rechercher d'éventuels facteurs pronostics.
+
+
+### Analyse par régression
+
+Une analyse multivariée par régression logistique sera réalisée en y incorporant les toutes les variables ayant une p-value \< 0,20 sur l'analyse monovariée.
+
+Une analyse multivariée des courbes de survie (modèle de Cox) sera réalisée sur les mêmes critères.
+
+## Objectifs secondaires
+
+### 
+
+
+### 
+
+
+
+## Technique {.appendix}
+
+L'analyse statistique sera réalisée avec le logiciel **R**[@rstat] & divers packages en particulier `tidyverse` [@tidy], `FactoMineR` [@facto] & `epiDisplay` [@epid].
+
