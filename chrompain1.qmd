@@ -1,0 +1,138 @@
+---
+subtitle: "Rapport statistique V 1.0"
+
+cache: true
+---
+
+```{r}
+#| label: info
+
+rm(list = ls())
+classeur <- "chrompain1.xlsx"
+expx <- FALSE
+if (expx){system(paste0("rm -f ",classeur))}
+
+library(corrplot)
+library(baseph)
+library(tidyverse)
+library(kableExtra)
+library(gtsummary)
+library(DataExplorer)
+library(WriteXLS)
+library(colorspace)
+library(forestmodel)
+library(xlsx)
+library(naniar)
+
+# sessionInfo()
+theme_gtsummary_language(language = "fr", decimal.mark = ",")
+theme_gtsummary_journal(journal = "jama")
+options(OutDec = ",")
+#
+tt <- readRDS("datas/chrompain.RDS")
+```
+
+# Généralités
+
+L'échantillon brut comporte `r nrow(tt)` cas pour `r ncol(tt)-1` variables. Le fichier comporte beaucoup de données manquantes. 
+
+Vu le très faible nombre de cas aucun test ne sera réalisé. 
+
+```{r}
+#| label: missing
+#| fig-cap: "Données manquantes"
+#| fig-height: 30
+
+plot_missing(tt,title = "% de données manquantes")
+```
+
+```{r}
+#| label: miss
+
+zz <- miss_var_summary(tt) |> 
+  dplyr::filter(pct_miss > 50)
+aa <- zz$variable
+tt <- tt |> 
+  dplyr::select(-all_of(aa)) |> 
+   dplyr::select(! starts_with("date")) 
+```
+
+
+
+On supprime toutes les variables ayant plus de 50 % de données manquantes. Il reste `r ncol(tt)-1` variables.
+
+# Patients
+
+```{r}
+#| label: tbl-pat
+#| tbl-cap: Patients
+aa <- str_detect(zz <-  names(tt), "ano")
+ouinon <- names(tt)[aa]
+
+ouinon <- c(ouinon, "rad", "dan", "imf", "dysmorphie", "amimique", "convulsions_j", "hypotonie", "hypertonie", "autonomie_respi", "autonomie_respi", "autonomie_alim","allaitement")
+
+tt |> 
+  dplyr::select(3:32) |>
+  tbl_summary(missing = "no", 
+                value = list(ouinon ~ c("Oui"))
+)|> 
+  modify_header(label ~ " ") |> 
+  bold_labels() |> 
+ add_n() |> 
+ pexptabph(exp = expx, nomfich = classeur, nomsheet = "patients", lg = TRUE)
+
+```
+
+# Gestes
+
+```{r}
+#| label: tbl-gestes
+#| tbl-cap: Gestes
+
+ouinon <- c("rea_salle", "surfactant", "ventilation_entree", "irm" , "chirurgie",  "pansements")
+
+tt |> 
+  dplyr::select(63:80) |>
+  tbl_summary(missing = "no", 
+                 value = list(ouinon ~ c("Oui"))
+) |> 
+   modify_header(label ~ " ") |> 
+  bold_labels() |> 
+  add_n() |> 
+  pexptabph(exp = expx, nomfich = classeur, nomsheet = "gestes", lg = TRUE)
+```
+
+# Analgésie
+
+```{r}
+#| label: tbl-analg
+#| tbl-cap: Analgésie
+
+ouinon <- c("modi_ftt_echell", "modif_lata" ,"morphine", "desir_all", "pleure_geint", "grimaces", "tortille", "apnees","amorphe" ,"manifestation", "ballonnement" )
+
+tt |> 
+  dplyr::select(33:62) |>
+  tbl_summary(missing = "no", 
+                 value = list(ouinon ~ c("Oui"))
+) |> 
+   modify_header(label ~ " ") |> 
+  bold_labels() |> 
+  add_n() |> 
+  pexptabph(exp = expx, nomfich = classeur, nomsheet = "analgesie", lg = TRUE)
+```
+
+
+# Décès
+
+```{r}
+#| label: tbl-deces
+#| tbl-cap: Décès
+
+tt |> 
+  dplyr::select(81:85) |>
+  tbl_summary(missing = "no" ) |> 
+   modify_header(label ~ " ") |> 
+  bold_labels() |> 
+  add_n() |> 
+  pexptabph(exp = expx, nomfich = classeur, nomsheet = "deces", lg = TRUE)
+```
